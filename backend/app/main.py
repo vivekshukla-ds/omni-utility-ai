@@ -1,46 +1,37 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-# CORS (allow frontend access)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-@app.get("/")
-def root():
-    return {"message": "Backend is running"}
-
 @app.get("/health")
 def health():
     return {"status": "ok"}
-from fastapi import UploadFile, File
-import os
 
 @app.post("/pdf/upload")
 async def upload_pdf(file: UploadFile = File(...)):
     if not file.filename.lower().endswith(".pdf"):
-        return {"error": "Only PDF files allowed"}
+        return {"error": "Only PDF allowed"}
 
-    contents = await file.read()
-    size_mb = len(contents) / (1024 * 1024)
+    data = await file.read()
+    size_mb = len(data) / (1024 * 1024)
 
-    if size_mb <= 10:
-        price = 1
-    elif size_mb <= 20:
-        price = 10
+    if size_mb <= 1:
+        price = 4
+    elif size_mb <= 10:
+        price = 40
     else:
-        price = 20
+        price = 500
 
     return {
         "filename": file.filename,
         "size_mb": round(size_mb, 2),
         "price_inr": price,
-        "payment_required": True
+        "pay_link": "https://rzp.io/l/demo-link"
     }
-# PDF UPLOAD ENDPOINT TEST
