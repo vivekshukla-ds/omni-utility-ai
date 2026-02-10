@@ -1,20 +1,21 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-from fastapi.middleware.cors import CORSMiddleware
-
-# Allow frontend (Vercel) to call backend
+# CORS (allow frontend access)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # later we can restrict
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Health check endpoint
-@app.get("/health")
-def health_check():
-    return {"status": "ok"}
+@app.get("/")
+def root():
+    return {"message": "Backend is running"}
 
+@app.get("/health")
+def health():
+    return {"status": "ok"}
