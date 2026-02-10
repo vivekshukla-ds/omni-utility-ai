@@ -43,3 +43,4 @@ async def upload_pdf(file: UploadFile = File(...)):
         "price_inr": price,
         "payment_required": True
     }
+# PDF UPLOAD ENDPOINT TEST
